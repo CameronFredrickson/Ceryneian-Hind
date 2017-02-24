@@ -1,6 +1,9 @@
 from urllib2 import urlopen, Request
 import sys
+import requests
 import json
+
+# pip install --user requests, the package installed is isolated to the current user.
 
 def store_users(f_users):
   with open(f_users) as f:
