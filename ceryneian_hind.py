@@ -5,13 +5,7 @@ def check_connection_status(status):
   if status.status_code == 200:
 	return True
   else:
-    print "Connection Failed."
-    sys.exit(1)
-
-
-def print_user_locations(user_locations):
-  for k,v in user_locations:
-    print k, ">", v
+    return False
 
 
 def get_locations(response_args, f_users):
@@ -20,15 +14,15 @@ def get_locations(response_args, f_users):
   user_locations = {}
   for user in users:
     status = requests.get("https://api.intra.42.fr/v2/users/" + user.strip() + "/locations?" + "&".join(response_args))
-    if check_connection_status(status):
+    connection_status = check_connection_status(status)
+    if connection_status:
 	  response = status.json()
-	  print response
-	  sys.exit(1)
-	  user_locations[user] = response[u'location']
+	  if len(response) > 0:
+	    print user.strip() + ' is at computer: ' + response[0]['host']
+	  else:
+	    print user.strip() + " is not logged onto a computer."
     else:
-	  user_location[user] = 'N/A'
-  return user_locations
-
+	   user.strip() + " is an invalid user."
 
 
 def get_token(client_id, secret_id, args, f_users):
@@ -64,7 +58,6 @@ def main():
 
   response_args = get_token(client_id, secret_id, args, f_users)
   locations = get_locations(response_args, f_users)
-  print_user_locations(user_locations)
 
 if __name__ == '__main__':
   main()
