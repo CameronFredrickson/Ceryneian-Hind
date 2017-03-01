@@ -1,47 +1,70 @@
-from urllib2 import urlopen, Request
-import requests
-from requests_oauthlib import OAuth2, OAuth2Session
-import sys
-import requests
-import json
+import sys, requests
+import simplejson as json
 
-# pip install --user requests, the package installed is isolated to the current user.
-
-def store_users(f_users):
-  with open(f_users) as f:
-    data = f.readlines()
-  user_locations = {}
-  for user in data:
-    user_locations[user.strip()] = 'N/A'
-  return user_locations
-
-def print_user_locations(user_locations):
-  for k, v in user_locations.items():
-    print k, '>', v
-
-def api_call(uid, secret, auth_url):
-  hind = urlopen(auth_url)
-  # hind = Request('https://api.intra.42.fr/v2/users/:cfredric/locations', headers={'Authorization: Bearer': uid})
-  # result = urlopen(hind)
-  response = hind.read()
-  print response
-
-def main():
-  UID = '45d33b9302c364a2130aa74e735459e64cfc4da181b37e9bb66160d7b09fed47'
-  SECRET = '03a5508f94b6a7eb05ebec96642598f22001a35ca0f3959f9903bef194187519'
-  REDIRECT_URI = 'https://api.intra.42.fr/oauth/authorize?client_id=45d33b9302c364a2130aa74e735459e64cfc4da181b37e9bb66160d7b09fed47&redirect_uri=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FOAuth&response_type=code'
-  AUTHORIZE_URL = 'https://api.intra.42.fr/oauth/authorize?client_id=45d33b9302c364a2130aa74e735459e64cfc4da181b37e9bb66160d7b09fed47&redirect_uri=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FOAuth&scope=public&state=a_very_long_random_string_witchmust_be_unguessable'
-  SCOPE = "public"
-  try:
-    f_user = sys.argv[1]
-  except IndexError:
-    print "A text file must be passed in as an argument when script.py is run."
-    print "\n\tusage: python script.py [--user file]\n"
+def check_connection_status(status):
+  if status.status_code == 200:
+	return True
+  else:
+    print "Connection Failed."
     sys.exit(1)
 
-  oauth = OAuth2Session(UID, redirect_uri=REDIRECT_URI)
-  authorization_url, state = oauth.authorization_url("https://api.intra.42.fr/oauth/authorize")
-  token = oauth.fetch_token(SECRET, code=UID)
+
+def print_user_locations(user_locations):
+  for k,v in user_locations:
+    print k, ">", v
+
+
+def get_locations(response_args, f_users):
+  with open(f_users) as f:
+    users = f.readlines()
+  user_locations = {}
+  for user in users:
+    status = requests.get("https://api.intra.42.fr/v2/users/" + user.strip() + "/locations?" + "&".join(response_args))
+    if check_connection_status(status):
+	  response = status.json()
+	  print response
+	  sys.exit(1)
+	  user_locations[user] = response[u'location']
+    else:
+	  user_location[user] = 'N/A'
+  return user_locations
+
+
+
+def get_token(client_id, secret_id, args, f_users):
+  status = requests.post("https://api.intra.42.fr/oauth/token?%s" % ("&".join(args)))
+  if check_connection_status(status): 
+    print "+++++++++++++++++++++++++++++++++++"
+    print "Connected to the 42 API."
+    print "+++++++++++++++++++++++++++++++++++"
+  response = status.json()
+  response_args = [
+                   'access_token=%s' %  response[u'access_token'],
+                   'token_type=%s' %  response[u'token_type'],
+				   'filter[active]=true'
+                  ]
+  return response_args
+
+
+def main():
+  try:
+    f_users = sys.argv[1]
+    client_id = sys.argv[2]
+    secret_id = sys.argv[3]
+  except IndexError:
+    print "A text file must be passed in as an argument when script.py is run, as well as a client_id and a secret_id."
+    print "\n\tusage: python script.py [--user file] [client_id] [secret_id]\n"
+    sys.exit(1)
+
+  args = [
+          'grant_type=client_credentials',
+		  'client_id=' + client_id,
+		  'client_secret=' + secret_id
+		 ]
+
+  response_args = get_token(client_id, secret_id, args, f_users)
+  locations = get_locations(response_args, f_users)
+  print_user_locations(user_locations)
 
 if __name__ == '__main__':
   main()
