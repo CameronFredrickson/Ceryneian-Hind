@@ -17,7 +17,7 @@ def get_locations(response_args, f_users):
     connection_status = check_connection_status(status)
     if connection_status:
       response = status.json()
-      if len(response) > 0:
+      if response:
         print user.strip() + ' is at computer: ' + response[0]['host']
       else:
         print user.strip() + " is not logged onto a computer."
@@ -55,7 +55,7 @@ def main():
 		  'client_secret=' + secret_id
 		 ]
   response_args = get_token(client_id, secret_id, args, f_users)
-  locations = get_locations(response_args, f_users)
+  get_locations(response_args, f_users)
 
 if __name__ == '__main__':
   main()
