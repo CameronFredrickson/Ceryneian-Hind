@@ -1,4 +1,4 @@
-import sys, requests
+import sys, os, requests
 import simplejson as json
 
 def check_connection_status(status):
@@ -42,7 +42,7 @@ def get_locations(response_args, f_users):
             print user.strip() + " is an invalid user."
 
 
-def get_token(client_id, secret_id, args, f_users):
+def get_token(args, f_users):
     """Fetches a token from the api.
 
     Args:
@@ -71,18 +71,16 @@ def get_token(client_id, secret_id, args, f_users):
 def main():
     try:
         f_users = sys.argv[1]
-        client_id = sys.argv[2]
-        secret_id = sys.argv[3]
     except IndexError:
         print "A text file must be passed in as an argument when script.py is run, as well as a client_id and a secret_id."
-        print "\n\tusage: python script.py [--user file] [client_id] [secret_id]\n"
+        print "\n\tusage: python script.py [--user file]\n"
         sys.exit(1)
     args = [
             'grant_type=client_credentials',
-            'client_id=' + client_id,
-            'client_secret=' + secret_id
+            'client_id=' + os.environ["CLIENT_ID"],
+            'client_secret=' + os.environ["SECRET_ID"]
            ]
-    response_args = get_token(client_id, secret_id, args, f_users)
+    response_args = get_token(args, f_users)
     get_locations(response_args, f_users)
 
 if __name__ == '__main__':
