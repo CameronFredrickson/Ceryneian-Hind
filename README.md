@@ -1,5 +1,5 @@
 # Ceryneian-Hind
-A script to get the locations of users from the 42 api given a user's id.
+###A script to get the locations of users from the 42 api given a user's id.
 1. Create an application [here](https://profile.intra.42.fr/oauth/applications/new).
 2. Once your application is created enter the UID and SECRET keys in your shell like this:
 ~~~
