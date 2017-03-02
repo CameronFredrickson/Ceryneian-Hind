@@ -16,13 +16,13 @@ def get_locations(response_args, f_users):
     status = requests.get("https://api.intra.42.fr/v2/users/" + user.strip() + "/locations?" + "&".join(response_args))
     connection_status = check_connection_status(status)
     if connection_status:
-	  response = status.json()
-	  if len(response) > 0:
-	    print user.strip() + ' is at computer: ' + response[0]['host']
-	  else:
-	    print user.strip() + " is not logged onto a computer."
+      response = status.json()
+      if len(response) > 0:
+        print user.strip() + ' is at computer: ' + response[0]['host']
+      else:
+        print user.strip() + " is not logged onto a computer."
     else:
-	   user.strip() + " is an invalid user."
+      print user.strip() + " is an invalid user."
 
 
 def get_token(client_id, secret_id, args, f_users):
@@ -49,13 +49,11 @@ def main():
     print "A text file must be passed in as an argument when script.py is run, as well as a client_id and a secret_id."
     print "\n\tusage: python script.py [--user file] [client_id] [secret_id]\n"
     sys.exit(1)
-
   args = [
           'grant_type=client_credentials',
 		  'client_id=' + client_id,
 		  'client_secret=' + secret_id
 		 ]
-
   response_args = get_token(client_id, secret_id, args, f_users)
   locations = get_locations(response_args, f_users)
 
