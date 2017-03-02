@@ -2,7 +2,7 @@ import sys, requests
 import simplejson as json
 
 def check_connection_status(status):
-	"""Checks the status code of an http request.
+    """Checks the status code of an http request.
 
     Args:
         A response object containing the server;s response to an HTTP request
@@ -10,7 +10,7 @@ def check_connection_status(status):
     Returns:
         True is return if the status code is 200
         False is returned for all other server responses
-	"""
+    """
 
     if status.status_code == 200:
         return True
@@ -19,12 +19,12 @@ def check_connection_status(status):
 
 
 def get_locations(response_args, f_users):
-	"""Prints the location of the user read from a file.
+    """Prints the location of the user read from a file.
 
     Args:
         A list containing the token value, token type, and filter parameter to make the request.
         The name of a file in the form of a string containg the list of userid's to be queried from the api.
-	"""
+    """
 
     with open(f_users) as f:
         users = f.readlines()
@@ -43,7 +43,7 @@ def get_locations(response_args, f_users):
 
 
 def get_token(client_id, secret_id, args, f_users):
-	"""Fetches a token from the api.
+    """Fetches a token from the api.
 
     Args:
         The public key needed to query the api
@@ -53,7 +53,7 @@ def get_token(client_id, secret_id, args, f_users):
 
     Returns:
         A list containing the access token, token type, and filter to make authorized requests from the api
-	"""
+    """
     status = requests.post("https://api.intra.42.fr/oauth/token?%s" % ("&".join(args)))
     if check_connection_status(status): 
         print "+++++++++++++++++++++++++++++++++++"
