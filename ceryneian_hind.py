@@ -79,9 +79,9 @@ def main():
         sys.exit(1)
     args = [
             'grant_type=client_credentials',
-		    'client_id=' + client_id,
-		    'client_secret=' + secret_id
-		   ]
+            'client_id=' + client_id,
+            'client_secret=' + secret_id
+           ]
     response_args = get_token(client_id, secret_id, args, f_users)
     get_locations(response_args, f_users)
 
