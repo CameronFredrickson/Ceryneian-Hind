@@ -5,7 +5,7 @@ def check_connection_status(status):
     """Checks the status code of an http request.
 
     Args:
-        A response object containing the server;s response to an HTTP request
+        A response object containing the server's response to an HTTP request
 
     Returns:
         True is return if the status code is 200
