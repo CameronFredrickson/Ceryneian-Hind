@@ -5,11 +5,11 @@ def check_connection_status(status):
 	"""Checks the status code of an http request.
 
     Args:
-	    A response object containing the server;s response to an HTTP request
+        A response object containing the server;s response to an HTTP request
 
 	Returns:
-	    True is return if the status code is 200
-		False is returned for all other server responses
+        True is return if the status code is 200
+        False is returned for all other server responses
 	"""
 
     if status.status_code == 200:
@@ -22,8 +22,8 @@ def get_locations(response_args, f_users):
 	"""Prints the location of the user read from a file.
 
 	Args:
-	    A list containing the token value, token type, and filter parameter to make the request.
-		The name of a file in the form of a string containg the list of userid's to be queried from the api.
+        A list containing the token value, token type, and filter parameter to make the request.
+        The name of a file in the form of a string containg the list of userid's to be queried from the api.
 	"""
 
     with open(f_users) as f:
@@ -46,13 +46,13 @@ def get_token(client_id, secret_id, args, f_users):
 	"""Fetches a token from the api.
 
 	Args:
-	    The public key needed to query the api
+        The public key needed to query the api
         The private key needed to query the api
-		A list containg the client_credentials needed to make a request
-		The name of the file containg the user ids to be queried
+        A list containg the client_credentials needed to make a request
+        The name of the file containg the user ids to be queried
 
 	Returns:
-	    A list containing the access token, token type, and filter to make authorized requests from the api
+        A list containing the access token, token type, and filter to make authorized requests from the api
 	"""
     status = requests.post("https://api.intra.42.fr/oauth/token?%s" % ("&".join(args)))
     if check_connection_status(status): 
